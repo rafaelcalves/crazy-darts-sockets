@@ -8,24 +8,20 @@ class Servidor {
 		
 		String fraseCliente;
 		String fraseMaiusculas;
-		ServerGameManager game = null;
 
 		ServerSocket socketRecepcao = new ServerSocket(6789);
 
 		while(true) {
 			Socket socketConexao = socketRecepcao.accept();
-			BufferedReader doCliente = new BufferedReader(new InputStreamReader(new ObjectInputStream(socketConexao.getInputStream())));
-			ObjectOutputStream paraCliente = new ObjectOutputStream(socketConexao.getOutputStream());
-			fraseCliente= doCliente.readLine();
-			if(fraseCliente.equals("newClient")){
-				if(game == null){
-					game = new ServerGameManager();
-				}
-				ServerPlayer serverPlayer = game.newPlayer();
-				paraCliente.writeObject(serverPlayer);
+			BufferedReader doCliente = new BufferedReader(new InputStreamReader(socketConexao.getInputStream()));
+			DataOutputStream paraCliente = new DataOutputStream(socketConexao.getOutputStream());
+			ObjectOutputStream paraClienteO = new ObjectOutputStream(socketConexao.getOutputStream());
+			while(true) {
+				fraseCliente = doCliente.readLine();
+				fraseMaiusculas = fraseCliente.toUpperCase() + '\n';
+				paraClienteO.writeUTF(fraseMaiusculas);
+				//paraCliente.writeBytes(fraseMaiusculas);
 			}
-			fraseMaiusculas= fraseCliente.toUpperCase() + '\n';
-			paraCliente.writeBytes(fraseMaiusculas);
 		}
 	}
 }
