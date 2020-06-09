@@ -1,4 +1,4 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,19 +7,19 @@ public class Match {
     private List<Player> players;
     private List<Turn> turns;
 
-    Match(){
+    public Match(){
         players = new ArrayList<>();
         turns = new ArrayList<>();
     }
 
-    Player newPlayer(){
+    public Player newPlayer(){
         Player player = new Player();
         players.add(player);
         player.setId(players.size() - 1);
         return player;
     }
 
-    void newTurn(int playerId){
+    public void newTurn(int playerId){
         Turn turn = new Turn(playerId);
         turn.newThrow();
         turn.newThrow();
@@ -28,7 +28,7 @@ public class Match {
         updateScoreBoard(turn.getScore());
     }
 
-    void updateScoreBoard(Score score){
+    public void updateScoreBoard(Score score){
         Player currentPlayer = players.get(score.getPlayerIndex());
         Score currentPlayerScore = currentPlayer.getScore();
 

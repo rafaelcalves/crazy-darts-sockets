@@ -1,4 +1,4 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,13 @@ public class Turn {
     private List<Throw> aThrows;
     private Score score;
 
-    Turn(int playerIndex){
+    public Turn(int playerIndex){
         this.playerIndex = playerIndex;
         this.aThrows = new ArrayList<>();
         this.score = new Score(playerIndex);
     }
 
-    void newThrow(){
+    public void newThrow(){
         Throw aThrow = new Throw();
         aThrow.doThrow();
         aThrows.add(aThrow);

@@ -1,15 +1,15 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 public class Point {
     private double xPosition;
     private double yPosition;
 
-    Point(float x, float y){
+    public Point(float x, float y){
         xPosition = x;
         yPosition = y;
     }
 
-    Point(){
+    public Point(){
         xPosition = (Math.random() * ((10 - 0) + 1)) + 0;
         yPosition = (Math.random() * ((10 - 0) + 1)) + 0;
     }

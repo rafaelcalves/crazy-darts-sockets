@@ -1,4 +1,4 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 public class Throw {
     private static final int MAX_SCORE = 10;
@@ -6,16 +6,16 @@ public class Throw {
 
     private Point point;
 
-    void doThrow(){
-        point = new Point();
+    public void doThrow(){
+        point = new Point(); //TODO: how to throw
     }
 
-    int getScore(){
+    public int getScore(){
         int score = MAX_SCORE - calculateDistanceFromCenter();
         return score > MIN_SCORE ? score : MIN_SCORE;
     }
 
-    int calculateDistanceFromCenter(){
+    public int calculateDistanceFromCenter(){
         return (int)Math.sqrt(Math.pow(point.getX(),2) + Math.pow(point.getY(),2));
     }
 }

@@ -1,9 +1,10 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 public class Player {
     protected int id;
     protected Score score;
-    Player(){
+
+    public Player(){
         score = new Score(id);
     }
 

@@ -1,13 +1,14 @@
-package com.uni.redes;
+package com.uni.redes.game;
 
 public class Score {
     private int playerIndex;
     private int points;
 
-    Score(int playerIndex){
+    public Score(int playerIndex){
         this.playerIndex = playerIndex;
     }
-    void scorePoints(int points){
+
+    public void scorePoints(int points){
         this.points += points;
     }
 
