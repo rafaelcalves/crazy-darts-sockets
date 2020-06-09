@@ -15,14 +15,13 @@ public class ClientThread extends Thread {
         String fraseCliente;
         String fraseMaiusculas;
 
-        while (true) {
-            try {
-                fraseCliente = connection.readString();
-                fraseMaiusculas = fraseCliente.toUpperCase() + '\n';
-                connection.writeString(fraseMaiusculas);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            fraseCliente = connection.readString();
+            fraseMaiusculas = fraseCliente.toUpperCase() + '\n';
+            connection.writeString(fraseMaiusculas);
+            connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

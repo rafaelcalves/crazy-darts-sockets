@@ -34,6 +34,7 @@ public class Client extends Thread{
             toServer.writeBytes(frase + '\n');
             fraseModificada = fromServer.readLine();
             System.out.println("Do com.uni.redes.Servidor: " + fraseModificada);
+            clientSocket.close();
         }
         catch (Exception e){}
     }

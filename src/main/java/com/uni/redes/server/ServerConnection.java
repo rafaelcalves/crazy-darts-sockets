@@ -24,4 +24,8 @@ public class ServerConnection {
     public void writeString(String string) throws IOException {
         toClient.writeBytes(string);
     }
+
+    public void close() throws IOException {
+        socketConnection.close();
+    }
 }
