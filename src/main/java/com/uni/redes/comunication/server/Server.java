@@ -1,27 +1,26 @@
-package com.uni.redes.server;
+package com.uni.redes.comunication.server;
+
+import com.uni.redes.game.MatchManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Server {
 
     private ServerSocket serverSocket;
-    private List<ClientThread> threads;
+    private MatchManager manager;
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(6789);
-        this.threads = new ArrayList<>();
+        this.manager = new MatchManager();
     }
 
     public void run() {
 
         while(true){
             try {
-                ClientThread thread = new ClientThread(serverSocket.accept());
-                threads.add(thread);
-                thread.run();
+                ServerConnectionThread thread = new ServerConnectionThread(serverSocket.accept(), manager);
+                thread.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

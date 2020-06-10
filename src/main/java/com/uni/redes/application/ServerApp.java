@@ -1,6 +1,6 @@
 package com.uni.redes.application;
 
-import com.uni.redes.server.Server;
+import com.uni.redes.comunication.server.Server;
 
 import java.io.IOException;
 
