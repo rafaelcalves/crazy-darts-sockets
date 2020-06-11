@@ -1,28 +1,31 @@
 package com.uni.redes.game;
 
+import com.uni.redes.Constants.Client;
+import com.uni.redes.Constants.Server;
+
 public class MatchManager implements Manager {
     private Match match;
     private Turn currentTurn;
 
     public String handleMessage(String clientMessage){
         String[] splitMessage  = clientMessage.split(";");
-        if(splitMessage.length == 1) return "EMPTY";
-        if(splitMessage[1].equals("START")) {
+        if(splitMessage.length == 1) return Server.Message.Error.EMPTY;
+        if(splitMessage[1].equals(Client.Message.START)) {
             if (match == null) {
                 match = new Match();
                 int id = match.newPlayer();
-                return "STARTED;" + id;
+                return Server.Message.STARTED + ";" + id;
             } else if (match.hasStarted() || hasId(splitMessage[0])) {
-                return "MATCHERROR";
+                return Server.Message.Error.MATCH;
             } else {
                 int id = match.newPlayer();
                 if(id >= 0) {
                     currentTurn = match.newTurn();
-                    return "STARTED;" + id;
+                    return Server.Message.STARTED + ";" + id;
                 }
             }
-        } else if (splitMessage[1].equals("THROW")){
-            if(match.hasFinished()) return "MATCHEND;" + match.getWinnerIndex();
+        } else if (splitMessage[1].equals(Client.Message.THROW)){
+            if(match.hasFinished()) return Server.Message.MATCHEND + ";" + match.getWinnerIndex();
             if (isExpectedPlayer(splitMessage[0])){
                 double x;
                 double y;
@@ -31,18 +34,18 @@ public class MatchManager implements Manager {
                     y = Double.parseDouble(splitMessage[3]);
                 } catch (Exception e){
                     e.printStackTrace();
-                    return "THROWERROR";
+                    return Server.Message.Error.THROW;
                 }
                 int scoredPoints = match.newThrow(x, y);
                 if(scoredPoints < 0 || currentTurn.hasFinished()) currentTurn = match.getCurrentTurn();
-                return "THROWED;" + scoredPoints;
+                return Server.Message.THROWED + ";" + scoredPoints;
             }
-            return "TURNERROR";
-        } else if (splitMessage[1].equals("ESC")){
+            return Server.Message.Error.TURN;
+        } else if (splitMessage[1].equals(Client.Message.ESC)){
             match = null;
-            return "GAMEOVER";
+            return Server.Message.GAMEOVER;
         }
-        return "ERROR";
+        return Server.Message.Error.ANY;
     }
 
     private boolean hasId(String stringId) {

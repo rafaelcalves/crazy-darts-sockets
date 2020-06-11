@@ -16,7 +16,7 @@ public class Client {
     public void run() {
         while(true) {
             try {
-                ClientConnectionThread connectionThread = new ClientConnectionThread(new Socket(Constants.IP,Constants.PORT), manager);
+                ClientConnectionThread connectionThread = new ClientConnectionThread(new Socket(Constants.Client.IP,Constants.Client.PORT), manager);
                 connectionThread.run();
             } catch (IOException e) {
                 e.printStackTrace();
