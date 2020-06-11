@@ -1,13 +1,10 @@
 package com.uni.redes.application;
 
-import com.uni.redes.comunication.client.ClientConnectionThread;
+import com.uni.redes.comunication.client.Client;
 
 public class ClientApp {
     public static void main(String[] args) throws Exception {
-
-        while(true) {
-            ClientConnectionThread clientConnectionThread = new ClientConnectionThread();
-            clientConnectionThread.run();
-        }
+        Client client = new Client();
+        client.run();
     }
 }

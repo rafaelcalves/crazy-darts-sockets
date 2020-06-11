@@ -2,27 +2,33 @@ package com.uni.redes.comunication.client;
 
 import com.uni.redes.KeyboardReader;
 import com.uni.redes.comunication.ConnectionThread;
+import com.uni.redes.game.Player;
+import com.uni.redes.game.PlayerManager;
 
 import java.io.IOException;
+import java.net.Socket;
 
 public class ClientConnectionThread extends ConnectionThread {
     private KeyboardReader reader;
 
-    public ClientConnectionThread() throws IOException {
-        this.reader = new KeyboardReader();
-        setConnection(new ClientConnection());
+    public ClientConnectionThread(Socket socket, PlayerManager manager) throws IOException {
+        super(socket, manager);
+        reader = new KeyboardReader();
     }
 
     public void run(){
         try {
-            System.out.print("Digite uma frase: ");
-            String message = reader.readString();
+            PlayerManager manager = (PlayerManager) getManager();
+            System.out.print("Próxima ação (" + manager.getNextMove() + "):");
+            String message = manager.concatId(reader.readString());
 
             getConnection().writeString(message + '\n');
             message = getConnection().readString();
-            System.out.println("Do Servidor: " + message);
+            System.out.println(manager.handleMessage(message));
             getConnection().close();
         }
-        catch (Exception e){}
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

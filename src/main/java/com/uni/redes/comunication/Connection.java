@@ -6,10 +6,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public abstract class Connection {
+public class Connection {
     private Socket socket;
     private BufferedReader from;
     private DataOutputStream to;
+
+    public Connection(Socket socket) throws IOException {
+        this.socket = socket;
+        init();
+    }
 
     protected void init() throws IOException {
         this.from = new BufferedReader(new InputStreamReader(socket.getInputStream()));

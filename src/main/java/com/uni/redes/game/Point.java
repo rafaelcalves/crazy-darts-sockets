@@ -4,14 +4,14 @@ public class Point {
     private double xPosition;
     private double yPosition;
 
-    public Point(float x, float y){
+    public Point(double x, double y){
         xPosition = x;
         yPosition = y;
     }
 
     public Point(){
-        xPosition = (Math.random() * ((10 - 0) + 1)) + 0;
-        yPosition = (Math.random() * ((10 - 0) + 1)) + 0;
+        xPosition = (Math.random() * 11);
+        yPosition = (Math.random() * 11);
     }
 
     public double getX() {
