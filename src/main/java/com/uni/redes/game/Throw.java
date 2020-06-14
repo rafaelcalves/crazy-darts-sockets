@@ -6,8 +6,8 @@ public class Throw {
 
     private Point point;
 
-    public void doThrow(){
-        point = new Point(); //TODO: how to throw
+    public Throw(double x, double y) {
+        this.point = new Point(x,y);
     }
 
     public int getScore(){
