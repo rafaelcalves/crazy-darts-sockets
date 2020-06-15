@@ -8,6 +8,7 @@ public interface Constants {
             String START = "START";
             String THROW = "THROW";
             String ESC = "ESC";
+            String STATUS = "STATUS";
         }
     }
     interface Server {
@@ -22,6 +23,12 @@ public interface Constants {
                 String THROW = "THROWERROR";
                 String EMPTY = "EMPTYERROR";
                 String ANY = "ERROR";
+            }
+            interface Status {
+                String WAIT = "WAIT";
+                String YOURTURN = "YOURTURN";
+                String NOTYOURTURN = "NOTYOURTURN";
+                String FINISHED = "FINISHED";
             }
         }
     }

@@ -41,6 +41,11 @@ public class MatchManager implements Manager {
                 return Server.Message.THROWED + ";" + scoredPoints;
             }
             return Server.Message.Error.TURN;
+        } else if (splitMessage[1].equals(Client.Message.STATUS)){
+            int playerIndex = Integer.parseInt(splitMessage[0]);
+            String status = match.getStatus(playerIndex);
+            if(status.equals(Server.Message.Status.FINISHED)) return status + ";" + match.getWinnerIndex();
+            return status;
         } else if (splitMessage[1].equals(Client.Message.ESC)){
             match = null;
             return Server.Message.GAMEOVER;

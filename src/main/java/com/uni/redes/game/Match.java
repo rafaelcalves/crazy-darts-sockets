@@ -84,4 +84,11 @@ public class Match {
         if(player0Points > player1Points) return 0;
         return 1;
     }
+
+    public String getStatus(int playerIndex){
+        if(!hasStarted()) return MatchStatusEnum.WAIT.toString();
+        if(hasFinished()) return MatchStatusEnum.FINISHED.toString();
+        if(getNextPlayer() == playerIndex ) return MatchStatusEnum.NOTYOURTURN.toString();
+        return MatchStatusEnum.YOURTURN.toString();
+    }
 }
