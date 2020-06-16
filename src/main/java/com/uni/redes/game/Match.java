@@ -34,12 +34,8 @@ public class Match {
     public int newThrow(double x, double y) {
         Turn turn = getCurrentTurn();
         if (turn == null) return -1;
-        return doThrow(turn, x, y);
-    }
-
-    private int doThrow(Turn turn, double x, double y) {
         int scoredPoints = turn.newThrow(x, y);
-        if (scoredPoints < 0) endTurn();
+        if(turn.hasFinished()) endTurn();
         return scoredPoints;
     }
 
@@ -74,7 +70,7 @@ public class Match {
     }
 
     public boolean hasFinished(){
-        return turns.size() == MAX_TURNS;
+        return turns.size() == MAX_TURNS && getCurrentTurn().hasFinished();
     }
 
     public int getWinnerIndex(){
