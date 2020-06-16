@@ -9,6 +9,7 @@ public interface Constants {
             String THROW = "THROW";
             String ESC = "ESC";
             String STATUS = "STATUS";
+            String ENDTURN = "ENDTURN";
         }
     }
     interface Server {
