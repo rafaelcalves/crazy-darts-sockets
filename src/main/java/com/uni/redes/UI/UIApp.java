@@ -1,24 +1,22 @@
 package com.uni.redes.UI;
 
+import com.uni.redes.Constants;
+import com.uni.redes.comunication.client.ClientConnectionThread;
+import com.uni.redes.game.PlayerManager;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import com.uni.redes.Constants;
-import com.uni.redes.comunication.client.ClientConnectionThread;
-import com.uni.redes.game.PlayerManager;
-
 public class UIApp extends JFrame {
-    boolean start, esc;
-    String thrown;
-    private PlayerManager manager;
+    boolean connected = false, start = false, end = false, myTurn = false;
+    private final PlayerManager manager;
     private ClientConnectionThread connectionThread;
+    int move = 0;
 
     JPanel windowPanel = new JPanel();
     JPanel homePanel = new JPanel();
@@ -61,25 +59,31 @@ public class UIApp extends JFrame {
     JLabel thrown8 = new JLabel("<html>8)</html>");
     JLabel thrown9 = new JLabel("<html>9)</html>");
 
+    JLabel throwns[] = new JLabel[]{thrown1,thrown2,thrown3,thrown4,thrown5,thrown6,thrown7,thrown8,thrown9};
     JLabel messages = new JLabel("<html>Messages:</html>");
 
     public UIApp()  {
         this.manager = new PlayerManager();
     }
 
-    public void run() {
-        try {
-            connectionThread = new ClientConnectionThread(new Socket(Constants.Client.IP,Constants.Client.PORT), manager);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void run() throws InterruptedException {
+        Thread.sleep(1000);
+        if(connected)
+            updateStatus();
+    }
+
+    public void create() {
         Window UI = new Window();
         Init();
         UI.add(windowPanel);
         UI.setDefaultCloseOperation((JFrame.DISPOSE_ON_CLOSE));
         UI.setVisible(true);
     }
+
     public void newConnection(){
+        if(connectionThread != null) {
+            connectionThread.closeConnection();
+        }
         try {
             connectionThread = new ClientConnectionThread(new Socket(Constants.Client.IP,Constants.Client.PORT), manager);
         } catch (IOException e) {
@@ -198,85 +202,77 @@ public class UIApp extends JFrame {
 
         cardlayout.show(windowPanel, "1");
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String returned = "";
-                returned = connectionThread.run("START\n");
-                System.out.println(returned); //retirar
-                if(returned.equals("STARTED 0") || returned.equals("STARTED 1")) {
-                    System.out.println(connectionThread.nextMov()); //retirar
-                    updateMessage(gamePanel,"Messages: <br>First turn");
-                    updateCoords();
-                    cardlayout.show(windowPanel, "2");
+        startButton.addActionListener(e -> {
+            String returned;
+            newConnection();
+            returned = connectionThread.run("START\n");
+            System.out.println(returned); //retirar
+            if(returned.equals("STARTED 0") || returned.equals("STARTED 1")) {
+                connected = true;
+                System.out.println("Connected"); //retirar
+                updateStatus();
+                System.out.println(connectionThread.nextMov()); //retirar
+                if(myTurn){
+                    updateMessage(gamePanel,"Messages: <br>Your turn<br>Move:" + Integer.toString(move+1));
                 }
-                else if(returned.equals("MATCHERROR")) {
-                    updateMessage(homePanel, "Server is full, please wait.");
-                    cardlayout.show(windowPanel, "1");
+                else{
+                    updateMessage(gamePanel,"Messages: <br>Waiting other player");
+                }
+                updateCoords();
+                cardlayout.show(windowPanel, "2");
+            }
+            else if(returned.equals("MATCHERROR")) {
+                updateMessage(homePanel, "Server is full, please wait.");
+                cardlayout.show(windowPanel, "1");
+            }
+            else {
+                updateMessage(homePanel,"Error, please try again.");
+                cardlayout.show(windowPanel, "1");
+            }
+        });
+
+        instButton.addActionListener(e -> cardlayout.show(windowPanel, "3"));
+
+        aboutButton.addActionListener(e -> cardlayout.show(windowPanel, "4"));
+
+        newCoordButton.addActionListener(e -> updateCoords());
+
+        throwButton.addActionListener(e -> {
+            System.out.println(connectionThread.nextMov());
+            if(myTurn){
+                newConnection();
+                String returned;
+                returned = connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
+                System.out.println(returned); //retirar
+                if(returned.equals("THROWERROR")) {
+                    updateMessage(gamePanel,"Messages: <br>Error, please try again");
+                }
+                else if(returned.equals("ERROR")) {
+                    updateMessage(gamePanel,"Messages: <br>Error, please try again.");
                 }
                 else {
-                    updateMessage(homePanel,"Error, please try again.");
-                    cardlayout.show(windowPanel, "1");
+                    if(returned.length() == 9)
+                        updateThrown(move, Integer.toString(move+1)+") "+Character.toString(returned.charAt(8)));
+                    else
+                        updateThrown(move, Integer.toString(move+1)+") "+Character.toString(returned.charAt(8))+Character.toString(returned.charAt(9)));
+
+                    System.out.println(connectionThread.nextMov()); //retirar
+                    updateMessage(gamePanel, "Messages: <br>Your turn<br>Move:" + Integer.toString(move+1));
+                    updateCoords();
+                    System.out.println(Integer.toString(move)); //retirar
+                    if(move == 2 || move == 5 || move == 8) {
+                        newConnection();
+                        connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
+                        updateStatus();
+                    }
+                    ++move;
                 }
             }
         });
 
-        instButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardlayout.show(windowPanel, "3");
-            }
-        });
+        back1Button.addActionListener(e -> cardlayout.show(windowPanel, "1"));
 
-        aboutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardlayout.show(windowPanel, "4");
-            }
-        });
-
-        newCoordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateCoords();
-            }
-        });
-
-        throwButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(connectionThread.nextMov()); //retirar
-//                newConnection();
-//                String returned = "";
-//                connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
-//                System.out.println(returned); //retirar
-//                if(returned.equals("THROWERROR")) {
-//                    updateMessage(gamePanel,"Messages: <br>Error, please try again");
-//                }
-//                else if(returned.equals("ERROR")) {
-//                    updateMessage(gamePanel,"Messages: <br>Error, please try again.");
-//                }
-//                else {
-////                    System.out.println(connectionThread.nextMov()); //retirar
-////                    updateMessage(gamePanel, "Second turn");
-////                    updateCoords();
-//                }
-            }
-        });
-
-        back1Button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardlayout.show(windowPanel, "1");
-            }
-        });
-
-        back2Button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardlayout.show(windowPanel, "1");
-            }
-        });
+        back2Button.addActionListener(e -> cardlayout.show(windowPanel, "1"));
     }
 
     public static String truncate(double value) {
@@ -284,9 +280,42 @@ public class UIApp extends JFrame {
         return df.format(value);
     }
 
+    public String status() {
+        newConnection();
+        return connectionThread.run("STATUS\n");
+    }
+
     public void update() {
         windowPanel.revalidate();
         windowPanel.repaint();
+    }
+
+    public void updateStatus() {
+        String status = status();
+        switch (status) {
+            case "YOURTURN":
+                start = true;
+                myTurn = true;
+                updateMessage(gamePanel, "Messages: <br>Your turn<br>Move:" + Integer.toString(move+1));
+                break;
+            case "NOTYOURTURN":
+                start = true;
+                myTurn = false;
+                updateMessage(gamePanel, "Messages: <br>Not your turn");
+                break;
+            case "FINISHED":
+                start = false;
+                myTurn = false;
+                end = true;
+                updateMessage(gamePanel, "Messages: <br>Match has been finished");
+                break;
+            default:
+                start = false;
+                myTurn = false;
+                end = false;
+                break;
+        }
+        status = "";
     }
 
     public void updateCoords() {
@@ -305,10 +334,11 @@ public class UIApp extends JFrame {
         update();
     }
 
-    public void updateThrown(JLabel newThrown, String points) {
+    public void updateThrown(int move, String newText) {
+        JLabel newThrown = throwns[move];
         int y = newThrown.getY();
         gamePanel.remove(newThrown);
-        newThrown = new JLabel("<html>" + points + "</html>");
+        newThrown .setText("<html>" + newText + "</html>");
         newThrown.setBounds(20,y,100,20);
         newThrown.setFont(new Font("Times New Roman", Font.PLAIN, 16));
         gamePanel.add(newThrown);

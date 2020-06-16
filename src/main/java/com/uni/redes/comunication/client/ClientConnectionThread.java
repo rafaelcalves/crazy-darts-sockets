@@ -23,7 +23,7 @@ public class ClientConnectionThread extends ConnectionThread {
             message = getConnection().readString();
             System.out.println("Retorno:" + manager.handleMessage(message));
             message = manager.handleMessage(message);
-            getConnection().close();
+            closeConnection();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -33,5 +33,14 @@ public class ClientConnectionThread extends ConnectionThread {
     public String nextMov(){
         PlayerManager manager = (PlayerManager) getManager();
         return "Próxima ação (" + manager.getNextMove() + "):";
+    }
+    public void closeConnection(){
+        try {
+            if(getConnection() != null)
+                getConnection().close();
+        }
+        catch (Exception e){
+                e.printStackTrace();
+            }
     }
 }
