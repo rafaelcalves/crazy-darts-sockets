@@ -25,8 +25,9 @@ public class PlayerManager implements Manager{
             return Server.Message.MATCHEND + " " + splitMessage[1];
         } else if (splitMessage[0].equals(Server.Message.Status.FINISHED)) {
             return Server.Message.Status.FINISHED + " " + splitMessage[1];
-        } else if (splitMessage[0].equals(Server.Message.GAMEOVER)) {
+        } else if (splitMessage[0].equals(Server.Message.GAMEOVER) || splitMessage[0].equals(Server.Message.Status.NOMATCH)) {
             nextMove = Client.Message.START;
+            id = -1;
         }
         return splitMessage[0];
     }
