@@ -13,31 +13,39 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class UIApp extends JFrame {
-    boolean connected = false, start = false, end = false, myTurn = false;
+    boolean connected = false, start = false, end = false, myTurn = false, win = false;
     private final PlayerManager manager;
     private ClientConnectionThread connectionThread;
-    int move = 0;
+    int move = 0, id = 0;
 
     JPanel windowPanel = new JPanel();
     JPanel homePanel = new JPanel();
     JPanel instPanel = new JPanel();
     JPanel aboutPanel = new JPanel();
     JPanel gamePanel = new JPanel();
+    JPanel winPanel = new JPanel();
+    JPanel losePanel = new JPanel();
     JButton startButton = new JButton("Start");
     JButton instButton = new JButton("Instruction");
     JButton aboutButton = new JButton("About");
     JButton newCoordButton = new JButton("New coordinates");
+    JButton throwButton = new JButton("Throw");
     JButton back1Button = new JButton("Back");
     JButton back2Button = new JButton("Back");
-    JButton throwButton = new JButton("Throw");
+    JButton resultButton = new JButton("View result");
+    JButton menuButton = new JButton("Menu");
+    JButton menu1Button = new JButton("Menu");
     CardLayout cardlayout = new CardLayout();
 
     JLabel instText = new JLabel("<html>Welcome to Crazy Darts Sockets. <br>" +
             "<br>" +
-            "Two players throw their darts by entering x and y, each player has three moves.<br>" +
-            "Blablabla </html>");
+            "Two players throw their darts by entering x and y, each player has nine moves.<br>" +
+            "There are three moves per turn.<br>" +
+            "Whoever scores the most points wins.<br>" +
+            "Good luck!  </html>");
 
-    JLabel aboutText = new JLabel("<html>This is a computer network work and it was developed by Fábio Krein and Rafael Côrrea. Blablabla</html>");
+    JLabel aboutText = new JLabel("<html>This is a computer network work for the class of professor Marcio Martins.<br>" +
+            "It was developed by Fábio Krein and Rafael Côrrea. </html>");
 
     double xCoord = 0.0;
     double yCoord = 0.0;
@@ -61,6 +69,9 @@ public class UIApp extends JFrame {
 
     JLabel throwns[] = new JLabel[]{thrown1,thrown2,thrown3,thrown4,thrown5,thrown6,thrown7,thrown8,thrown9};
     JLabel messages = new JLabel("<html>Messages:</html>");
+
+    JLabel winText = new JLabel("<html>YOU WON!</html>");
+    JLabel loseText = new JLabel("<html>You lose :(</html>");
 
     public UIApp()  {
         this.manager = new PlayerManager();
@@ -98,8 +109,11 @@ public class UIApp extends JFrame {
         homePanel.setLayout(null);
 
         startButton.setBounds(120,500, 100,50);
+        homePanel.add(startButton);
         instButton.setBounds(240,500, 120,50);
+        homePanel.add(instButton);
         aboutButton.setBounds(380,500, 100,50);
+        homePanel.add(aboutButton);
 
         JLabel label = new JLabel();
         ImageIcon dbMenu = new ImageIcon("res/images/db_menu.png");
@@ -109,14 +123,12 @@ public class UIApp extends JFrame {
         label.setBounds(100,50, 400,400);
         homePanel.add(label);
 
-        homePanel.add(startButton);
-        homePanel.add(instButton);
-        homePanel.add(aboutButton);
-
 
         gamePanel.setLayout(null);
         throwButton.setBounds(150,500, 120,50);
+        gamePanel.add(throwButton);
         newCoordButton.setBounds(300,500, 150,50);
+        gamePanel.add(newCoordButton);
 
         JLabel label1 = new JLabel();
         ImageIcon dbGame = new ImageIcon("res/images/db_game.png");
@@ -175,14 +187,13 @@ public class UIApp extends JFrame {
         yText.setBounds(280,435,600,20);
         yText.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         gamePanel.add(yText);
-        gamePanel.add(newCoordButton);
-        gamePanel.add(throwButton);
 
 
         instPanel.setLayout(null);
         back1Button.setBounds(240,500, 120,50);
 
-        instText.setBounds(10,5,600,100);
+        instText.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        instText.setBounds(10,5,600,200);
         instPanel.add(instText);
         instPanel.add(back1Button);
 
@@ -190,15 +201,62 @@ public class UIApp extends JFrame {
         aboutPanel.setLayout(null);
         back2Button.setBounds(240,500, 120,50);
 
+        aboutText.setFont(new Font("Times New Roman", Font.PLAIN, 16));
         aboutText.setBounds(10,5,600,50);
         aboutPanel.add(aboutText);
         aboutPanel.add(back2Button);
+
+        winPanel.setLayout(null);
+        menuButton.setBounds(250,500, 120,50);
+        winPanel.add(menuButton);
+
+        winText.setBounds(280, 15,600,20);
+        winText.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        winPanel.add(winText);
+        JLabel label2 = new JLabel();
+        ImageIcon win0 = new ImageIcon("res/gifs/win.gif");
+        Image win1 = win0.getImage();
+        Image win2 = win1.getScaledInstance(300, 300, Image.SCALE_DEFAULT);
+        label2.setIcon(new ImageIcon(win2));
+        label2.setBounds(25,40, 300,300);
+        winPanel.add(label2);
+        JLabel label3 = new JLabel();
+        ImageIcon win3 = new ImageIcon("res/gifs/win2.gif");
+        Image win4 = win3.getImage();
+        Image win5 = win4.getScaledInstance(300, 200, Image.SCALE_DEFAULT);
+        label3.setIcon(new ImageIcon(win5));
+        label3.setBounds(275,250, 300,200);
+        winPanel.add(label3);
+
+        losePanel.setLayout(null);
+        menu1Button.setBounds(250,500, 120,50);
+        losePanel.add(menu1Button);
+
+        loseText.setBounds(280, 15,600,20);
+        loseText.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        losePanel.add(loseText);
+        JLabel label4 = new JLabel();
+        ImageIcon lose = new ImageIcon("res/gifs/lose.gif");
+        Image lose1 = lose.getImage();
+        Image lose2 = lose1.getScaledInstance(300, 200, Image.SCALE_DEFAULT);
+        label4.setIcon(new ImageIcon(lose2));
+        label4.setBounds(150,50, 300,200);
+        losePanel.add(label4);
+        JLabel label5 = new JLabel();
+        ImageIcon lose3 = new ImageIcon("res/gifs/lose2.gif");
+        Image lose4 = lose3.getImage();
+        Image lose5 = lose4.getScaledInstance(300, 200, Image.SCALE_DEFAULT);
+        label5.setIcon(new ImageIcon(lose5));
+        label5.setBounds(150,250, 300,200);
+        losePanel.add(label5);
 
 
         windowPanel.add(homePanel,"1");
         windowPanel.add(gamePanel,"2");
         windowPanel.add(instPanel,"3");
         windowPanel.add(aboutPanel,"4");
+        windowPanel.add(winPanel,"5");
+        windowPanel.add(losePanel,"6");
 
         cardlayout.show(windowPanel, "1");
 
@@ -206,12 +264,17 @@ public class UIApp extends JFrame {
             String returned;
             newConnection();
             returned = connectionThread.run("START\n");
-            System.out.println(returned); //retirar
+//            System.out.println(returned); //retirar
             if(returned.equals("STARTED 0") || returned.equals("STARTED 1")) {
+                if(returned.equals("STARTED 0"))
+                    id = 0;
+                else
+                    id = 1;
+
                 connected = true;
-                System.out.println("Connected"); //retirar
+//                System.out.println("Connected"); //retirar
                 updateStatus();
-                System.out.println(connectionThread.nextMov()); //retirar
+//                System.out.println(connectionThread.nextMov()); //retirar
                 if(myTurn){
                     updateMessage(gamePanel,"Messages: <br>Your turn<br>Move:" + Integer.toString(move+1));
                 }
@@ -238,12 +301,12 @@ public class UIApp extends JFrame {
         newCoordButton.addActionListener(e -> updateCoords());
 
         throwButton.addActionListener(e -> {
-            System.out.println(connectionThread.nextMov());
-            if(myTurn){
+//            System.out.println(connectionThread.nextMov());
+            if(myTurn && move < 9){
                 newConnection();
                 String returned;
                 returned = connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
-                System.out.println(returned); //retirar
+//                System.out.println(returned); //retirar
                 if(returned.equals("THROWERROR")) {
                     updateMessage(gamePanel,"Messages: <br>Error, please try again");
                 }
@@ -256,13 +319,13 @@ public class UIApp extends JFrame {
                     else
                         updateThrown(move, Integer.toString(move+1)+") "+Character.toString(returned.charAt(8))+Character.toString(returned.charAt(9)));
 
-                    System.out.println(connectionThread.nextMov()); //retirar
+//                    System.out.println(connectionThread.nextMov()); //retirar
                     updateMessage(gamePanel, "Messages: <br>Your turn<br>Move:" + Integer.toString(move+1));
                     updateCoords();
-                    System.out.println(Integer.toString(move)); //retirar
+//                    System.out.println(Integer.toString(move)); //retirar
                     if(move == 2 || move == 5 || move == 8) {
-                        newConnection();
-                        connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
+//                        newConnection();
+//                        connectionThread.run("THROW;" + truncate(xCoord) + ";" + truncate(yCoord) + "\n");
                         updateStatus();
                     }
                     ++move;
@@ -273,6 +336,42 @@ public class UIApp extends JFrame {
         back1Button.addActionListener(e -> cardlayout.show(windowPanel, "1"));
 
         back2Button.addActionListener(e -> cardlayout.show(windowPanel, "1"));
+
+        menuButton.addActionListener(e -> {
+            newConnection();
+            String returned;
+            returned = connectionThread.run("ESC\n");
+//                System.out.println(returned); //retirar
+            if(returned.equals("ERROR")) {
+                updateMessage(winPanel,"Messages: <br>Error, please try again.");
+            }
+            else {
+                reset();
+                cardlayout.show(windowPanel, "1");
+            }
+
+        });
+        menu1Button.addActionListener(e -> {
+
+            newConnection();
+            String returned;
+            returned = connectionThread.run("ESC\n");
+//                System.out.println(returned); //retirar
+            if(returned.equals("ERROR")) {
+                updateMessage(winPanel,"Messages: <br>Error, please try again.");
+            }
+            else {
+                reset();
+                cardlayout.show(windowPanel, "1");
+            }
+        });
+
+        resultButton.addActionListener(e -> {
+            if(win)
+                cardlayout.show(windowPanel, "5");
+            else
+                cardlayout.show(windowPanel, "6");
+        });
     }
 
     public static String truncate(double value) {
@@ -303,11 +402,23 @@ public class UIApp extends JFrame {
                 myTurn = false;
                 updateMessage(gamePanel, "Messages: <br>Not your turn");
                 break;
-            case "FINISHED":
+            case "FINISHED 0":
+                if(id == 0)
+                    win = true;
                 start = false;
                 myTurn = false;
                 end = true;
                 updateMessage(gamePanel, "Messages: <br>Match has been finished");
+                updateMatchEnd();
+                break;
+            case "FINISHED 1":
+                if(id == 1)
+                    win = true;
+                start = false;
+                myTurn = false;
+                end = true;
+                updateMessage(gamePanel, "Messages: <br>Match has been finished");
+                updateMatchEnd();
                 break;
             default:
                 start = false;
@@ -316,6 +427,13 @@ public class UIApp extends JFrame {
                 break;
         }
         status = "";
+    }
+    public void updateMatchEnd() {
+        gamePanel.remove(newCoordButton);
+        gamePanel.remove(throwButton);
+        resultButton.setBounds(250,500, 120,50);
+        gamePanel.add(resultButton);
+        update();
     }
 
     public void updateCoords() {
@@ -352,5 +470,17 @@ public class UIApp extends JFrame {
         messages.setFont(new Font("Times New Roman", Font.PLAIN, 16));
         panelTemp.add(messages);
         update();
+    }
+
+    public void reset(){
+        connected = false;
+        start = false;
+        end = false;
+        myTurn = false;
+        win = false;
+        move = 0;
+        id = 0;
+        xCoord = 0.0;
+        yCoord = 0.0;
     }
 }
