@@ -26,6 +26,7 @@ public interface Constants {
                 String ANY = "ERROR";
             }
             interface Status {
+                String NOMATCH = "NOMATCH";
                 String WAIT = "WAIT";
                 String YOURTURN = "YOURTURN";
                 String NOTYOURTURN = "NOTYOURTURN";
