@@ -16,12 +16,12 @@ public class ClientConnectionThread extends ConnectionThread {
         String message = "";
         try {
             PlayerManager manager = (PlayerManager) getManager();
-            System.out.print("Próxima ação (" + manager.getNextMove() + "):");
-            System.out.println(command);
+//            System.out.print("Próxima ação (" + manager.getNextMove() + "):");
+//            System.out.println(command);
             message = manager.concatId(command);
             getConnection().writeString(message + '\n');
             message = getConnection().readString();
-            System.out.println("Retorno:" + manager.handleMessage(message));
+//            System.out.println("Retorno:" + manager.handleMessage(message));
             message = manager.handleMessage(message);
             closeConnection();
         }
